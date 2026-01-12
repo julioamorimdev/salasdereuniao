@@ -1,6 +1,6 @@
 # Sistema de Agendamento de Salas de Reunião
 
-Sistema completo de gerenciamento de salas de reunião e agendamentos, desenvolvido com React.js, Express, Node.js, PostgreSQL e TailwindCSS, totalmente containerizado com Docker.
+Sistema de gerenciamento de salas de reunião e agendamentos, desenvolvido com React.js, Express, Node.js, PostgreSQL e TailwindCSS, totalmente containerizado com Docker.
 
 ### Pré-requisitos
 
