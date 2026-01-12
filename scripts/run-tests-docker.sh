@@ -17,7 +17,7 @@ fi
 echo "Executando testes automatizados no Docker..."
 echo ""
 
-# Verificar se o PostgreSQL está rodando
+# Verificando se o PostgreSQL está rodando
 if ! $DOCKER_COMPOSE ps 2>/dev/null | grep -q "sala_reuniao_db"; then
     echo "PostgreSQL não está rodando. Iniciando..."
     $DOCKER_COMPOSE up -d postgres
