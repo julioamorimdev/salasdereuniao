@@ -1,0 +1,1 @@
+/opt/homebrew/Cellar/postgresql@14/14.20/bin/postgres "-D" ".pgdata-test" "-p" "5433" "-k" "/tmp/pgsocket_sala" "-c" "listen_addresses=127.0.0.1"

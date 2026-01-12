@@ -1,0 +1,98 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: sala_reuniao_db
+    environment:
+      POSTGRES_DB: sala_reuniao
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/banco.sql:/docker-entrypoint-initdb.d/banco.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sala_reuniao_backend
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: sala_reuniao
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    ports:
+      - "5001:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sala_reuniao_frontend
+    environment:
+      REACT_APP_API_URL: http://localhost:5001/api
+      CHOKIDAR_USEPOLLING: true
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+
+  # Para executar testes do backend
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sala_reuniao_backend_test
+    environment:
+      NODE_ENV: test
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME_TEST: sala_reuniao
+      DB_NAME: sala_reuniao
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm test
+    profiles:
+      - test
+
+  # Para executar testes do frontend
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sala_reuniao_frontend_test
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm test
+    profiles:
+      - test
+
+volumes:
+  postgres_data:
