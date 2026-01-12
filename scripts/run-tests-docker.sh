@@ -14,7 +14,7 @@ else
     exit 1
 fi
 
-echo "🧪 Executando testes automatizados no Docker..."
+echo "Executando testes automatizados no Docker..."
 echo ""
 
 # Verificar se o PostgreSQL está rodando
